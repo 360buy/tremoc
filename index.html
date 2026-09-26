@@ -439,7 +439,6 @@ footer{border-top:1px solid var(--line);padding:clamp(50px,8vh,90px) var(--pad) 
     <div class="hero-row">
       <div class="hero-tags">
         <span class="big">OPEN-FORMAT / NEW YORK</span>
-        <span class="meta">TRANSMISSION 001 — FIRST CHAPTER</span>
       </div>
     </div>
   </div>
@@ -499,7 +498,7 @@ footer{border-top:1px solid var(--line);padding:clamp(50px,8vh,90px) var(--pad) 
   <canvas id="freqCanvas" aria-hidden="true"></canvas>
   <div class="freq-inner wrap">
     <h2 class="freq-head">ENTER<br>THE FREQUENCY<span style="color:var(--accent)">.</span></h2>
-    <div class="freq-sub">MOVE — LISTEN — T·001</div>
+    <div class="freq-sub">MOVE — LISTEN</div>
   </div>
 </section>
 
@@ -513,8 +512,6 @@ footer{border-top:1px solid var(--line);padding:clamp(50px,8vh,90px) var(--pad) 
     <div class="tl meta">NEW YORK<br>40.7128° N &nbsp; 74.0060° W</div>
     <div class="tr meta">OPEN-FORMAT<br>AFTER HOURS</div>
     <div class="center int-big" data-parallax="0.15">TREMØC</div>
-    <div class="bl meta">TRANSMISSION 001</div>
-    <div class="br meta">02:17 AM</div>
   </div>
 </section>
 
@@ -528,7 +525,6 @@ footer{border-top:1px solid var(--line);padding:clamp(50px,8vh,90px) var(--pad) 
         <p>His sets run on a refined ear and an instinct for reading a room — easing out of a slow, low-lit start and building toward the peak of the night, crossing genres without ever losing the thread. The result feels effortless, a little unpredictable, and never quite like anyone else's.</p>
         <p><span style="color:var(--text)">This is the first chapter — and it's only getting started.</span></p>
       </div>
-      <div class="ab-tag meta">TREMØC / NYC — T·001</div>
     </div>
     <div class="ab-portrait noimg" id="abPortrait">
       <div class="ab-fallback" aria-hidden="true"></div>
@@ -541,7 +537,6 @@ footer{border-top:1px solid var(--line);padding:clamp(50px,8vh,90px) var(--pad) 
 <section id="files" class="section wrap">
   <div class="files-head">
     <h2>NIGHT<br>FILES<span style="color:var(--accent)">.</span></h2>
-    <div class="meta">005 FILES — NEW YORK AFTER DARK</div>
   </div>
   <div class="files-grid" id="filesGrid"><!-- injected --></div>
 </section>
@@ -646,9 +641,10 @@ function guardImg(img, wrapSel){
   if(!img) return;
   const wrap = wrapSel? img.closest(wrapSel):img.parentElement;
   const fail=()=>wrap&&wrap.classList.add("noimg");
-  if(img.complete&&img.naturalWidth===0) fail();
+  const ok=()=>wrap&&wrap.classList.remove("noimg");
+  if(img.complete&&img.src){ img.naturalWidth>0 ? ok() : fail(); }   // data URIs load before listeners attach
   img.addEventListener("error",fail);
-  img.addEventListener("load",()=>{ if(img.naturalWidth>0) wrap&&wrap.classList.remove("noimg"); });
+  img.addEventListener("load",()=>{ if(img.naturalWidth>0) ok(); });
 }
 guardImg($("#heroImgD"),".hero-media");
 guardImg($("#heroImgM"),".hero-media");
@@ -821,7 +817,7 @@ $$('a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
   const grid=$("#filesGrid"),spans=["f1","f2","f3","f4","f5"];
   CONFIG.nightFiles.forEach((f,i)=>{
     const el=document.createElement("figure");
-    el.className="file noimg "+(spans[i]||"f1"); el.dataset.i=i; el.dataset.cursor="view";
+    el.className="file "+(spans[i]||"f1"); el.dataset.i=i; el.dataset.cursor="view";
     el.innerHTML=`
       <div class="file-ph" aria-hidden="true"><span>${f.id}</span></div>
       <img src="${f.src}" alt="${f.name}" loading="lazy"/>
@@ -831,7 +827,7 @@ $$('a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
         <span class="nm">TREMØC / NYC</span>
         <span class="vw">VIEW ↗</span>
       </figcaption>`;
-    guardImg(el.querySelector("img"),".file");
+    el.querySelector("img").addEventListener("error",()=>el.classList.add("noimg"));
     el.addEventListener("click",()=>openLB(i));
     grid.appendChild(el);
   });
