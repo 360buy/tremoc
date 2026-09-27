@@ -7,21 +7,21 @@
 <!-- ==================== SEO / SOCIAL ==================== -->
 <title>TREMØC — House DJ / New York</title>
 <meta name="description" content="TREMØC is a New York-based DJ. Late-night sets that move across genres. Enter the frequency." />
-<link rel="canonical" href="https://tremoc.com/" />
+<link rel="canonical" href="/" />
 <meta name="theme-color" content="#050505" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="TREMØC — House DJ / New York" />
 <meta property="og:description" content="TREMØC is a New York-based DJ. Late-night sets that move across genres. Enter the frequency." />
 <meta property="og:site_name" content="TREMØC" />
-<meta property="og:url" content="https://tremoc.com/" />
-<meta property="og:image" content="https://tremoc.com/tremoc-og.jpg" />
+<meta property="og:url" content="/" />
+<meta property="og:image" content="/tremoc-og.jpg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="TREMØC — House DJ / New York" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="TREMØC — House DJ / New York" />
 <meta name="twitter:description" content="TREMØC is a New York-based DJ. Late-night sets that move across genres. Enter the frequency." />
-<meta name="twitter:image" content="https://tremoc.com/tremoc-og.jpg" />
+<meta name="twitter:image" content="/tremoc-og.jpg" />
 
 <!-- Inline SVG favicon: the Ø mark -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23050505'/%3E%3Ctext x='16' y='23' font-family='Arial' font-size='22' font-weight='900' fill='%23F2F0EA' text-anchor='middle'%3E%C3%98%3C/text%3E%3C/svg%3E" />
@@ -101,12 +101,11 @@ nav.scrolled{background:rgba(5,5,5,.6);backdrop-filter:blur(14px) saturate(120%)
 .navlinks a:hover{color:var(--text)}
 .navlinks a.book{color:var(--text);border:1px solid var(--line);padding:9px 16px;letter-spacing:.16em;transition:border-color .3s,color .3s}
 .navlinks a.book:hover{border-color:var(--accent);color:var(--accent)}
-.burger{display:none;flex-direction:column;gap:5px;width:30px;height:30px;align-items:flex-end;justify-content:center;cursor:pointer;z-index:7100;background:none;border:none;padding:0;-webkit-appearance:none;appearance:none}
-.burger span:nth-child(2){width:70%}
-.burger span{height:1.5px;background:var(--text);width:100%;transition:transform .4s var(--ease),opacity .3s}
-body.menu-open .burger span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.burger{display:none;flex-direction:column;gap:6px;width:30px;height:30px;align-items:stretch;justify-content:center;cursor:pointer;z-index:7100;background:none;border:none;padding:0;-webkit-appearance:none;appearance:none}
+.burger span{height:2px;background:var(--text);width:100%;transform-origin:center;transition:transform .4s var(--ease),opacity .25s}
+body.menu-open .burger span:nth-child(1){transform:translateY(8px) rotate(45deg)}
 body.menu-open .burger span:nth-child(2){opacity:0}
-body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+body.menu-open .burger span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
 
 /* mobile fullscreen menu */
 #mobileMenu{position:fixed;inset:0;z-index:7050;background:var(--bg);
@@ -673,8 +672,10 @@ tick(); setInterval(tick,1000);
    ============================================================ */
 (function loader(){
   const l=$("#loader"),word=$("[data-l]"),sub=$("[data-lsub]"),bar=$("#loaderBar"),cnt=$("#lcount");
-  const done=()=>{ l.style.transition="opacity .8s var(--ease),transform .9s var(--ease)"; l.style.opacity="0"; l.style.transform="scale(1.04)";
-    setTimeout(()=>{l.style.display="none";document.body.classList.add("ready");revealHero();},850); };
+  const done=()=>{
+    if(window.gsap&&!RM) gsap.set(["#heroTitle",".hero-tags>*",".clock"],{opacity:0}); // pre-hide so no flash while loader fades
+    l.style.transition="opacity .8s var(--ease),transform .9s var(--ease)"; l.style.opacity="0"; l.style.transform="scale(1.04)";
+    setTimeout(()=>{l.style.display="none";document.body.classList.add("ready");revealHero();},650); };
   if(RM){ word.style.transform="translateY(0)"; sub.style.opacity="1"; setTimeout(done,500); return; }
   requestAnimationFrame(()=>{ word.style.transition="transform 1s var(--ease)"; word.style.transform="translateY(0)"; });
   setTimeout(()=>{ sub.style.transition="opacity .6s"; sub.style.opacity="1"; },500);
@@ -688,10 +689,9 @@ tick(); setInterval(tick,1000);
 function revealHero(){
   if(RM||!window.gsap) return;
   const tl=gsap.timeline();
-  tl.from("#heroTitle",{yPercent:12,opacity:0,duration:1.1,ease:"power3.out"})
-    .from(".hero-tags>*",{y:20,opacity:0,stagger:.08,duration:.7,ease:"power2.out"},"-=.6")
-    .from(".clock",{opacity:0,duration:.6},"-=.5");
-  gsap.to("#heroImg,#heroMedia .noimg",{});
+  tl.fromTo("#heroTitle",{yPercent:10,opacity:0},{yPercent:0,opacity:1,duration:1.1,ease:"power3.out"})
+    .fromTo(".hero-tags>*",{y:20,opacity:0},{y:0,opacity:1,stagger:.08,duration:.7,ease:"power2.out"},"-=.6")
+    .fromTo(".clock",{opacity:0},{opacity:1,duration:.6},"-=.5");
 }
 // pointer parallax on hero title + media
 if(!TOUCH&&!RM){
